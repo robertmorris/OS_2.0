@@ -15,7 +15,7 @@ import java.util.Stack;
  *
  * @author overload
  */
-public class DriverClass {
+public class DriverClass extends Thread {
     
     BufferedReader in;
     private String[] token;
@@ -63,7 +63,10 @@ public class DriverClass {
             Schedule();
             System.out.println("Scheduling Done");
             System.out.println("Enter CPU");
+            
+            
             Cpu();
+            
             System.out.println("end of CPU method");
             
         }
@@ -129,6 +132,11 @@ public class DriverClass {
 
     private void Cpu() {
        
+        
+        
+        
+        
+        
         String instr = new String();
         int counter = 0;
         for(int i=0; i<Ram.length;i++)
@@ -143,7 +151,10 @@ public class DriverClass {
             Decode(instr);
             System.out.println("End Decode");
             System.out.println("Begin Execute");
+            
+            
             Execute(instr);
+            
             
             System.out.println("Execution Complete");
             System.out.println();
