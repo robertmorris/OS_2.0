@@ -15,7 +15,7 @@ import java.util.Stack;
  *
  * @author overload
  */
-public class DriverClass extends Thread {
+public class DriverClass implements Runnable {
     
     BufferedReader in;
     private String[] token;
@@ -29,8 +29,12 @@ public class DriverClass extends Thread {
     FileReader file_1;
     private static int count=0;
     protected int addr;
-
-
+    
+    boolean t1Lock;
+    boolean t2Lock;
+    boolean t3Lock;
+    boolean t4Lock;
+    
     private short opCode;
     private short type;
     private short s1_reg;
@@ -52,6 +56,10 @@ public class DriverClass extends Thread {
         read = "";
         token = new String[1024];
         memoryLocation = 0;
+        t1Lock = false;
+        t2Lock = false;
+        t3Lock = false;
+        t4Lock = false;
     }
 
     void Begin() {
@@ -64,13 +72,87 @@ public class DriverClass extends Thread {
             System.out.println("Scheduling Done");
             System.out.println("Enter CPU");
             
+            //Cpu();
             
-            Cpu();
+           
+      
+      Runnable r = new Runnable() {     
+      public void run() {
+            Cpu();                   
+             }
+          };
+      
+        Thread t1 = new Thread(r);
+        Thread t2 = new Thread(r);
+        Thread t3 = new Thread(r);
+        Thread t4 = new Thread(r);
+        
+        boolean foundThread = false;
+        
+        while(foundThread == false)
+        {
             
-            System.out.println("end of CPU method");
+        if(t1.isAlive() == false)
+        {
+            t1.start();
+            foundThread = true;
+        }
+        else if(t2.isAlive() == false)
+        {
+            t2.start();
+            foundThread = true;
+        }
+        else if(t3.isAlive() == false)
+        {
+            t3.start();
+            foundThread = true;
+        }
+        else if(t4.isAlive() == false)
+        {
+            t4.start();
+            foundThread = true;
+        }
+        
+        }
+        
+        
+        /*
+        Thread t2 = new Thread(r);
+        t2.start();
+        
+         
+        
+        Thread t3 = new Thread(r);
+        Thread t4 = new Thread(r);
+        
+        if(t1Lock == false)
+        {
+            t1Lock = true;
+            
+            t1Lock = false;
+        }
+        if(t2Lock == false)
+        {
+            t2Lock = true;
+            
+            t2Lock = false;
+        }
+        if(t3Lock == false)
+        {
+            t3Lock = true;
+            t3.start();
+            t3Lock = false;
+        }
+        if(t4Lock == false)
+        {
+            t4Lock = true;
+            t4.start();
+            t4Lock = false;
+        }   
+                */
             
         }
-        System.out.println("COMPLETED SUCCESSFULLY");
+        //System.out.println("COMPLETED SUCCESSFULLY");
     }
 
     private void Load() {
@@ -131,11 +213,9 @@ public class DriverClass extends Thread {
     }
 
     private void Cpu() {
-       
+     
         
-        
-        
-        
+      
         
         String instr = new String();
         int counter = 0;
@@ -143,7 +223,7 @@ public class DriverClass extends Thread {
         {
             if(Ram[i] != null)
             {
-            System.out.println("Counter = " + counter++);
+            //System.out.println("Counter = " + counter++);
             System.out.println("Get Binary");
             instr = getBinaryData(Ram[i].toString());
             System.out.println("Binary Recieved");
@@ -157,11 +237,16 @@ public class DriverClass extends Thread {
             
             
             System.out.println("Execution Complete");
+            System.out.println("end of CPU method");
             System.out.println();
             System.out.println();
+            
             }
             
+        
+        
         }
+     
         
         
       
@@ -241,6 +326,8 @@ public class DriverClass extends Thread {
     }
 
     private void Execute(String s) {
+        
+        
         System.out.println("\nExecuting instruction...." + " OPCODE = " + opCode);
 
         if (!(opCode < 0) || (opCode > 26)) {
@@ -365,6 +452,11 @@ public class DriverClass extends Thread {
         } else {
             System.err.println("DIDN'T DECODE... OPCDOE = " + opCode);
         }
+    }
+
+    @Override
+    public void run() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     
